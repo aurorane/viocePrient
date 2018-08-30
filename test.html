@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>11</title>
+</head>
+<body>
+<div id="myChart" style="width: 800px;height: 500px"></div>
+</body>
+<script src="assets/js/jquery-1.10.2.js"></script>
+<script src="assets/js/echarts.min.js"></script>
+<script>
+    $(function () {
+        var myChart = echarts.init(document.getElementById('myChart'));
+        var xAxisData = ['8.20','8.21','8.22','8.23','8.24','8.25','8.27','8.28'];
+        var data3 = ['145','147','153','188','96','50','84','120'];
+        var data4=[
+            ['2','北京','上海'],
+            ['54','深圳','青岛','青海'],
+            ['43','内蒙古','哈尔滨'],
+            ['34','郑州','河北'],
+            ['32','云南','四川','重庆','安徽','福建'],
+            ['54','宁夏','湖北'],
+            ['33','大连','西安'],
+            ['34','浙江','新疆']
+        ]
+        var itemStyle = {
+            normal: {
+            },
+            emphasis: {
+                barBorderWidth: 1,
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowOffsetY: 0,
+                shadowColor: 'rgba(0,0,0,0.5)'
+            }
+        };
+
+        var option = {
+            backgroundColor: '#eee',
+            legend: {
+                data: [ 'bar3', 'bar4'],
+                align: 'left',
+                left: 10
+            },
+            brush: {
+                toolbox: ['rect', 'polygon', 'lineX', 'lineY', 'keep', 'clear'],
+                xAxisIndex: 0
+            },
+            toolbox: {
+                feature: {
+                    magicType: {
+                        type: ['stack', 'tiled']
+                    },
+                    dataView: {}
+                }
+            },
+            tooltip: {
+                trigger: 'item',
+                formatter: function(params) {
+                    var res = params.name;
+                    var id = params.dataIndex;
+                    var mm=[];
+                    for(var j=0;j<data4.length;j++){
+                        var kk = data4[j].slice(1)
+                        mm.push(kk)
+                    }
+                    if(params.seriesName=='bar3'){
+                        res+=' : '+'正常'+'<br>个数 : '+data3[id]
+                    }else if(params.seriesName=='bar4'){
+                       var s=''
+                        for(var i=0;i<mm[id].length;i++){
+                            s+=mm[id][i]+'<br>'
+                        }
+                        res+=' : '+'告警'+'<br>个数 : '+data4[id][0]+'<br>城市 :<br>'+s+'<br>'
+                    }
+                    return res;
+                }
+            },
+            xAxis: {
+                data: xAxisData,
+                name: 'X Axis',
+                silent: true,
+                axisLine: {onZero: true},
+                splitLine: {show: false},
+                splitArea: {show: false}
+            },
+            yAxis: {
+                inverse: false,
+                splitArea: {show: false}
+            },
+            grid: {
+                left: 100
+            },
+
+            series: [
+                {
+                    name: 'bar3',
+                    type: 'bar',
+                    stack: 'two',
+                    itemStyle: itemStyle,
+                    data: data3
+                },
+                {
+                    name: 'bar4',
+                    type: 'bar',
+                    stack: 'two',
+                    itemStyle: itemStyle,
+                    data: data4.map(function (d) {
+                        return(d[0])
+                    })
+                }
+            ]
+        };
+
+        myChart.on('click',eConsole);
+        function eConsole(param){
+            console.log(param)
+            alert(param.seriesName);
+        }
+
+        // myChart.on('brushSelected', renderBrushed);
+        //
+        // function renderBrushed(params) {
+        //     var brushed = [];
+        //     var brushComponent = params.batch[0];
+        //
+        //     for (var sIdx = 0; sIdx < brushComponent.selected.length; sIdx++) {
+        //         var rawIndices = brushComponent.selected[sIdx].dataIndex;
+        //         brushed.push('[Series ' + sIdx + '] ' + rawIndices.join(', '));
+        //     }
+        //
+        //     myChart.setOption({
+        //         title: {
+        //             backgroundColor: '#333',
+        //             text: 'SELECTED DATA INDICES: \n' + brushed.join('\n'),
+        //             bottom: 0,
+        //             right: 0,
+        //             width: 100,
+        //             textStyle: {
+        //                 fontSize: 12,
+        //                 color: '#fff'
+        //             }
+        //         }
+        //     });
+        // }
+        myChart.setOption(option)
+
+    })
+</script>
+</html>
